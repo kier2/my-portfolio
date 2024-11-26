@@ -32,10 +32,10 @@
       <div class="w-full lg:max-w-lg lg:flex-auto">
         <div v-if="infos[0]">
           <h2 class="text-pretty text-3xl font-semibold tracking-tight text-zinc-800 sm:text-4xl">
-            {{ infos[0].about_heading }}
+            {{ infos[0]?.about_heading }}
           </h2>
           <p class="mt-6 text-zinc-600 space-y-7 text-base leading-7">
-            {{ infos[0].about_description }}
+            {{ infos[0]?.about_description }}
           </p>
         </div>
 

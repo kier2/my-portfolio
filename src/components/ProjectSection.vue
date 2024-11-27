@@ -1,7 +1,18 @@
 <script setup>
   import { collection, getDocs } from "firebase/firestore";
   import { db } from "../firebase.js";
-  import { onMounted, ref } from "vue";
+  import { onMounted, ref, defineProps } from "vue";
+
+  const props = defineProps({
+      title: {
+        type: String,
+        required: true
+      },
+      subTitle: {
+        type: String,
+        required: false
+      }
+  })
 
   const projectData = ref([]);
 
@@ -29,18 +40,24 @@
   })
 </script>
 <template>
-  <div class="py-24">
+  <div class="py-24" id="projects">
     <div class="">
+      <h2 class="mt-10 text-pretty text-4xl font-semibold tracking-tight text-zinc-800">
+        {{ props.title }}
+      </h2>
+      <p class="mt-4 mb-10 text-pretty text-zinc-600">
+        {{ props.subTitle }}
+      </p>
+
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" v-if="projectData">
         <article
         v-for="(project, index) in projectData" :key="index"
         class="hover:bg-zinc-50 rounded-lg p-6 group">
-          <!-- <a :href="project.link" target="_blank" v-bind="project"> -->
+          <a :href="project.link" target="_blank" v-bind="project">
             <div class="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-md border border-zinc-200">
               <img alt="" width="64" height="64" class="h-8 w-8 p-1 object-cover" :src="`https://kier-portfolio.s3.ap-southeast-1.amazonaws.com/${project.img}`" />
             </div>
             <h4 class="text-base mt-6 mb-3">
-              <span class="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl"></span>
               <span class="relative z-10 font-semibold text-zinc-900 text-md capitalize">{{ project.name }}</span>
             </h4>
 
@@ -53,7 +70,7 @@
                 {{ project.page }}
               </span>
             </div>
-          <!-- </a> -->
+          </a>
         </article>
       </div>
     </div>

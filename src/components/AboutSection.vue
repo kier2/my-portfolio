@@ -1,9 +1,19 @@
 <script setup>
   import { collection, query, getDocs } from "firebase/firestore";
   import { db } from "../firebase.js";
-  import { onMounted, ref } from "vue";
+  import { onMounted, ref, defineProps } from "vue";
 
   const infos = ref([]);
+  const props = defineProps({
+    title: {
+      type: String,
+      required: true
+    },
+    subTitle: {
+      type: String,
+      required: false
+    }
+  })
 
   const getAboutInfo = async () => {
     try {
@@ -27,15 +37,15 @@
 </script>
 
 <template>
-  <div class="mx-auto mt-2 max-w-7xl px-6 sm:mt-20 lg:px-10">
+  <div class="mx-auto mt-2 max-w-7xl px-6 sm:mt-20 lg:px-10 py-10" id="about">
     <div class="mx-auto flex max-w-2xl flex-col justify-between gap-20 lg:mx-0 lg:max-w-none lg:flex-row">
       <div class="w-full lg:max-w-lg lg:flex-auto">
         <div v-if="infos[0]">
           <h2 class="text-pretty text-3xl font-semibold tracking-tight text-zinc-800 sm:text-4xl">
-            {{ infos[0]?.about_heading }}
+            {{ props.title }}
           </h2>
-          <p class="mt-6 text-zinc-600 space-y-7 text-base leading-7">
-            {{ infos[0]?.about_description }}
+          <p class="mt-6 text-zinc-600 space-y-7 leading-7">
+            {{ props.subTitle }}
           </p>
         </div>
 

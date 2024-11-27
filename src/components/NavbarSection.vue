@@ -1,15 +1,50 @@
 <script setup>
-  import { ref } from 'vue'
+  import { ref, watch, onMounted } from 'vue'
   import { Dialog, DialogPanel } from '@headlessui/vue'
+  import { useRoute, RouterLink } from 'vue-router';
 
-  const navigation = [
-    { name: 'Home', href: '#' },
-    { name: 'About', href: '#' },
-    { name: 'Projects', href: '#' },
-    { name: 'Contact Me', href: '#' },
-  ]
-
+  const route = useRoute();
+  const currentRoute = ref();
   const mobileMenuOpen = ref(false)
+
+  const handleNavigation = (href) => {
+      if (href.startsWith('#')) {
+        // Handle anchor scrolling
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+          window.scrollTo({
+            top: targetElement.offsetTop - 60,
+            behavior: 'smooth',
+          });
+        }
+      } else {
+        window.location.href = href;
+      }
+  };
+
+  const getCurrentRoute = () => {
+    if(route.hash){
+      currentRoute.value = route.hash;
+      history.replaceState(null, null, " ");
+    }else{
+      currentRoute.value = route.fullPath;
+    }
+
+  }
+
+  watch(
+    () => route,
+    (newHash) => {
+      console.log('Hash changed:', newHash.hash);
+      currentRoute.value = newHash.hash;
+      console.log(currentRoute.value)
+      history.replaceState(null, null, " ");
+    }
+  );
+
+  onMounted(() => {
+    getCurrentRoute()
+  })
 </script>
 <template>
   <header class="absolute inset-x-0 top-0 z-50">
@@ -27,9 +62,41 @@
           </button>
         </div>
         <div class="hidden lg:flex lg:gap-x-7 shadow-lg shadow-zinc-800/5 ring-1 ring-zinc-900/5 backdrop-blur px-8 py-2.5 rounded-full">
-          <a v-for="item in navigation" :key="item.name" :href="item.href" class="text-sm/6 font-semibold text-gray-900">
-            {{ item.name }}
-            <span class="absolute inset-x-1 -bottom-px h-px bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0"></span>
+
+          <RouterLink
+            to="/"
+            class="text-sm/6 font-semibold text-gray-900 group relative">
+            Home
+            <span
+            :class="`${(currentRoute == '/') ? 'visible' : 'invisible' } group-hover:visible absolute inset-x-0 -bottom-[12px] h-[2px] bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0 w-full`"></span>
+          </RouterLink>
+          <a
+            href="/#about"
+            class="text-sm/6 font-semibold text-gray-900 group relative">
+            About
+            <span
+            :class="`${(currentRoute == '#about') ? 'visible' : 'invisible' } group-hover:visible absolute inset-x-0 -bottom-[12px] h-[2px] bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0 w-full`"></span>
+          </a>
+          <a
+            href="/#projects"
+            class="text-sm/6 font-semibold text-gray-900 group relative">
+            Projects
+            <span
+            :class="`${(currentRoute == '#projects') ? 'visible' : 'invisible' } group-hover:visible absolute inset-x-0 -bottom-[12px] h-[2px] bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0 w-full`"></span>
+          </a>
+          <a
+            href="/blogs"
+            class="text-sm/6 font-semibold text-gray-900 group relative">
+            Blogs
+            <span
+            :class="`${(currentRoute == 'blogs') ? 'visible' : 'invisible' }group-hover:visible absolute inset-x-0 -bottom-[12px] h-[2px] bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0 w-full`"></span>
+          </a>
+          <a
+            href="/#contact"
+            class="text-sm/6 font-semibold text-gray-900 group relative">
+            Contact Me
+            <span
+            :class="`${(currentRoute == '#contact') ? 'visible' : 'invisible' }group-hover:visible absolute inset-x-0 -bottom-[12px] h-[2px] bg-gradient-to-r from-teal-500/0 via-teal-500/40 to-teal-500/0 dark:from-teal-400/0 dark:via-teal-400/40 dark:to-teal-400/0 w-full`"></span>
           </a>
         </div>
       </nav>
@@ -49,7 +116,12 @@
           <div class="mt-6 flow-root">
             <div class="-my-6 divide-y divide-gray-500/10">
               <div class="space-y-2 py-6 shadow-md">
-                <a v-for="item in navigation" :key="item.name" :href="item.href" class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</a>
+                <a
+                @click.prevent="handleNavigation(item.href)"
+                 v-for="item in navigation"
+                 :key="item.name"
+                 :href="item.href"
+                 class="-mx-3 block rounded-lg px-3 py-2 text-base/7 font-semibold text-gray-900 hover:bg-gray-50">{{ item.name }}</a>
               </div>
             </div>
           </div>
